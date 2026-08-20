@@ -1,0 +1,12 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[remote "origin"]
+	url = https://github.com/Salaa2ma33/huminexa-hrms-crm.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[credential]
+	helper = wincred

@@ -45,11 +45,45 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static frontend from public/ or root
-const staticDir = fs.existsSync(path.join(__dirname, 'public')) 
-  ? path.join(__dirname, 'public') 
-  : __dirname;
-app.use(express.static(staticDir));
+// Serve static frontend from all potential folders
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
+
+// Explicit route for style.css with multi-path resolution
+app.get(['/css/style.css', '/style.css', '/public/css/style.css'], (req, res) => {
+  const possiblePaths = [
+    path.join(__dirname, 'public', 'css', 'style.css'),
+    path.join(__dirname, 'public', 'style.css'),
+    path.join(__dirname, 'css', 'style.css'),
+    path.join(__dirname, 'style.css')
+  ];
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+      res.setHeader('Content-Type', 'text/css');
+      return res.sendFile(p);
+    }
+  }
+  res.status(404).send('/* CSS file not found */');
+});
+
+// Explicit route for JS files with multi-path resolution
+app.get(['/js/:file', '/:file.js', '/public/js/:file'], (req, res) => {
+  let fileName = req.params.file;
+  if (!fileName.endsWith('.js')) fileName += '.js';
+  const possiblePaths = [
+    path.join(__dirname, 'public', 'js', fileName),
+    path.join(__dirname, 'public', fileName),
+    path.join(__dirname, 'js', fileName),
+    path.join(__dirname, fileName)
+  ];
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+      res.setHeader('Content-Type', 'application/javascript');
+      return res.sendFile(p);
+    }
+  }
+  res.status(404).send('// JS file not found');
+});
 
 /* ==========================================================================
    AUTHENTICATION ROUTES
