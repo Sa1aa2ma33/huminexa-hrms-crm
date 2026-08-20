@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -44,8 +45,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static frontend
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static frontend from public/ or root
+const staticDir = fs.existsSync(path.join(__dirname, 'public')) 
+  ? path.join(__dirname, 'public') 
+  : __dirname;
+app.use(express.static(staticDir));
 
 /* ==========================================================================
    AUTHENTICATION ROUTES
@@ -1532,7 +1536,29 @@ app.get('*', (req, res) => {
       message: `API endpoint '${req.method} ${req.originalUrl}' not found.`
     });
   }
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+
+  const publicIndexPath = path.join(__dirname, 'public', 'index.html');
+  const rootIndexPath = path.join(__dirname, 'index.html');
+
+  if (fs.existsSync(publicIndexPath)) {
+    return res.sendFile(publicIndexPath);
+  } else if (fs.existsSync(rootIndexPath)) {
+    return res.sendFile(rootIndexPath);
+  } else {
+    return res.status(404).send(`
+      <!DOCTYPE html>
+      <html>
+      <head><title>HUMINEXA - Frontend Files Missing</title><style>body{font-family:sans-serif;padding:40px;background:#f8fafc;color:#1e293b;text-align:center;line-height:1.6;} .card{background:white;padding:30px;border-radius:12px;max-width:600px;margin:0 auto;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);}</style></head>
+      <body>
+        <div class="card">
+          <h2 style="color:#6366f1;">🚀 HUMINEXA Backend Server is Live!</h2>
+          <p>The backend API is running successfully, but the <b>public</b> folder (containing <code>index.html</code>, <code>css</code>, and <code>js</code>) is not yet in your GitHub repository.</p>
+          <p>Please upload the <b>public</b> folder to your GitHub repo to view the frontend interface.</p>
+        </div>
+      </body>
+      </html>
+    `);
+  }
 });
 
 // Start Server
