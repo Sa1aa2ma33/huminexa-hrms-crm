@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HUMINEXA — Enterprise HRMS & CRM Platform</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234F46E5'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Application CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- ====================================================================
+         SIDEBAR NAVIGATION
+         ==================================================================== -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <div class="brand-icon" style="width: 36px; height: 36px; font-size: 16px;">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+          <span class="sidebar-brand-name">HUMINEXA</span>
+        </div>
+        <button id="sidebarToggleBtn" class="sidebar-toggle-btn" title="Collapse Sidebar">
+          <i class="fa-solid fa-bars-staggered"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Overview</div>
+        <ul class="nav-list">
+          <li>
+            <a href="javascript:void(0)" class="nav-item active" data-section="dashboard">
+              <i class="fa-solid fa-chart-pie"></i>
+              <span class="nav-item-text">Dashboard</span>
+            </a>
+          </li>
+        </ul>
+
+        <div id="navHrmsHeader" class="nav-section-title">HR & Workforce</div>
+        <ul class="nav-list">
+          <li>
+            <a href="javascript:void(0)" class="nav-item" data-section="employees">
+              <i class="fa-solid fa-users"></i>
+              <span class="nav-item-text">Employees</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-item" data-section="departments">
+              <i class="fa-solid fa-sitemap"></i>
+              <span class="nav-item-text">Departments</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-item" data-section="attendance">
+              <i class="fa-solid fa-calendar-check"></i>
+              <span class="nav-item-text">Attendance</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-item" data-section="leaves">
+              <i class="fa-solid fa-calendar-minus"></i>
+              <span class="nav-item-text">Leave Requests</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-item" data-section="announcements">
+              <i class="fa-solid fa-bullhorn"></i>
+              <span class="nav-item-text">Bulletin Board</span>
+            </a>
+          </li>
+        </ul>
+
+        <div id="navCrmHeader" class="nav-section-title">Sales & CRM</div>
+        <ul class="nav-list">
+          <li>
+            <a href="javascript:void(0)" class="nav-item" data-section="companies">
+              <i class="fa-solid fa-building"></i>
+              <span class="nav-item-text">Companies</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-item" data-section="contacts">
+              <i class="fa-solid fa-address-book"></i>
+              <span class="nav-item-text">Contacts</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-item" data-section="leads">
+              <i class="fa-solid fa-filter-circle-dollar"></i>
+              <span class="nav-item-text">Sales Pipeline</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-item" data-section="activities">
+              <i class="fa-solid fa-list-check"></i>
+              <span class="nav-item-text">Activities Log</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-avatar">HX</div>
+        <div class="sidebar-user-details sidebar-footer-user-info">
+          <div class="sidebar-user-name user-info-name">User Account</div>
+          <div class="sidebar-user-role user-info-role">Role</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ====================================================================
+         MAIN WRAPPER & TOPBAR
+         ==================================================================== -->
+    <div class="main-wrapper">
+      
+      <!-- Topbar Header -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Toggle Navigation Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="globalSearchInput" placeholder="Quick search records, staff, leads...">
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <button id="topbarThemeToggle" class="topbar-btn" title="Switch Theme">
+            <i class="fa-solid fa-circle-half-stroke"></i>
+          </button>
+
+          <div style="position: relative;">
+            <button id="notificationBtn" class="topbar-btn" title="Notifications">
+              <i class="fa-regular fa-bell"></i>
+              <span class="notification-badge"></span>
+            </button>
+          </div>
+
+          <div style="position: relative;">
+            <div id="userProfileDropdownTrigger" class="user-profile-menu">
+              <div class="user-avatar-sm">HX</div>
+              <div class="user-info-text">
+                <span class="user-info-name" id="topbarUserName">User Account</span>
+                <span class="user-info-role" id="topbarUserRole">Role</span>
+              </div>
+              <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem; color: var(--text-muted); margin-left: 4px;"></i>
+            </div>
+
+            <!-- Profile Dropdown Menu -->
+            <div id="userProfileDropdownMenu" class="dropdown-menu">
+              <div style="padding: 10px 16px; border-bottom: 1px solid var(--border);">
+                <strong style="display: block; font-size: 0.88rem;" class="user-info-name">Alexander Vance</strong>
+                <span style="font-size: 0.75rem; color: var(--text-muted);" class="user-info-role">Admin</span>
+              </div>
+              <a href="javascript:void(0)" class="dropdown-item" id="btnOpenProfileModal">
+                <i class="fa-regular fa-user"></i> My Profile
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="javascript:void(0)" class="dropdown-item" style="color: var(--danger);" id="btnLogout">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Body Container -->
+      <main class="content-body">
+
+        <!-- ================================================================
+             SECTION 1: DASHBOARD
+             ================================================================ -->
+        <section id="section-dashboard" class="page-section active">
+          <div class="page-header">
+            <div class="page-header-title">
+              <h1>Enterprise Operations Hub</h1>
+              <p>Real-time analytics and workforce overview.</p>
+            </div>
+            <div class="page-header-actions">
+              <button class="btn btn-secondary" id="dashBtnClockIn"><i class="fa-solid fa-clock"></i> Quick Attendance</button>
+              <button class="btn btn-primary" id="dashBtnNewLead"><i class="fa-solid fa-plus"></i> New Lead</button>
+            </div>
+          </div>
+
+          <!-- KPI Cards Grid -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Total Employees</span>
+                <span class="stat-value" id="kpiTotalEmployees">0</span>
+                <span class="stat-subtext positive"><i class="fa-solid fa-circle-check"></i> Active workforce</span>
+              </div>
+              <div class="stat-icon-wrapper stat-icon-indigo">
+                <i class="fa-solid fa-users"></i>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Present Today</span>
+                <span class="stat-value" id="kpiPresentToday">0</span>
+                <span class="stat-subtext" id="kpiAttendanceRate">0% Rate</span>
+              </div>
+              <div class="stat-icon-wrapper stat-icon-emerald">
+                <i class="fa-solid fa-user-check"></i>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Employees On Leave</span>
+                <span class="stat-value" id="kpiOnLeave">0</span>
+                <span class="stat-subtext"><i class="fa-regular fa-calendar"></i> Approved off</span>
+              </div>
+              <div class="stat-icon-wrapper stat-icon-amber">
+                <i class="fa-solid fa-user-clock"></i>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Active Sales Leads</span>
+                <span class="stat-value" id="kpiActiveLeads">0</span>
+                <span class="stat-subtext"><i class="fa-solid fa-bolt"></i> In pipeline</span>
+              </div>
+              <div class="stat-icon-wrapper stat-icon-sky">
+                <i class="fa-solid fa-filter-circle-dollar"></i>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Pipeline Value</span>
+                <span class="stat-value" id="kpiPipelineValue">$0</span>
+                <span class="stat-subtext positive"><i class="fa-solid fa-arrow-trend-up"></i> Estimated volume</span>
+              </div>
+              <div class="stat-icon-wrapper stat-icon-teal">
+                <i class="fa-solid fa-sack-dollar"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row -->
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-chart-pie" style="color: var(--primary);"></i> Today's Attendance Breakdown</div>
+              </div>
+              <div class="card-body" style="height: 280px; position: relative;">
+                <canvas id="attendanceChart"></canvas>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-chart-column" style="color: var(--secondary);"></i> Leads by Pipeline Stage</div>
+              </div>
+              <div class="card-body" style="height: 280px; position: relative;">
+                <canvas id="leadsStageChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Feeds Grid -->
+          <div class="grid-2">
+            <!-- Recent Leaves -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i class="fa-regular fa-calendar-minus" style="color: var(--warning);"></i> Recent Leave Applications</div>
+                <button class="btn btn-sm btn-secondary" onclick="navigateToSection('leaves')">View All</button>
+              </div>
+              <div class="card-body" style="padding: 0;">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Employee</th>
+                        <th>Type</th>
+                        <th>Duration</th>
+                        <th>Days</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashRecentLeavesTable"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Leads -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-money-bill-trend-up" style="color: var(--accent);"></i> Recent Sales Opportunities</div>
+                <button class="btn btn-sm btn-secondary" onclick="navigateToSection('leads')">View All</button>
+              </div>
+              <div class="card-body" style="padding: 0;">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Opportunity</th>
+                        <th>Contact</th>
+                        <th>Value</th>
+                        <th>Stage</th>
+                        <th>Owner</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashRecentLeadsTable"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Announcements & Upcoming Birthdays -->
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-bullhorn" style="color: var(--primary);"></i> Company Bulletins</div>
+                <button class="btn btn-sm btn-secondary" onclick="navigateToSection('announcements')">Open Board</button>
+              </div>
+              <div class="card-body" style="padding: 0;" id="dashAnnouncementsList"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-cake-candles" style="color: var(--accent);"></i> Birthdays & Celebrations This Month</div>
+              </div>
+              <div class="card-body" id="dashUpcomingEvents"></div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ================================================================
+             SECTION 2: EMPLOYEES
+             ================================================================ -->
+        <section id="section-employees" class="page-section">
+          <div class="page-header">
+            <div class="page-header-title">
+              <h1>Employee Directory</h1>
+              <p>Manage employee records, roles, departments, and payroll details.</p>
+            </div>
+            <div class="page-header-actions">
+              <button class="btn btn-primary" id="btnOpenAddEmployee"><i class="fa-solid fa-user-plus"></i> Register Employee</button>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <div class="filter-group">
+              <input type="text" id="empSearchInput" class="form-control" placeholder="Search by name, email, ID..." style="min-width: 240px;">
+              <select id="empDeptFilter" class="form-control">
+                <option value="All">All Departments</option>
+              </select>
+              <select id="empStatusFilter" class="form-control">
+                <option value="All">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+            <span id="employeesTotalCount" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">0 Records</span>
+          </div>
+
+          <div class="card">
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Emp ID</th>
+                      <th>Employee</th>
+                      <th>Department</th>
+                      <th>Designation</th>
+                      <th>Joining Date</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="employeesTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 3: DEPARTMENTS
+             ================================================================ -->
+        <section id="section-departments" class="page-section">
+          <div class="page-header">
+            <div class="page-header-title">
+              <h1>Department Management</h1>
+              <p>Organize organizational units, department heads, and functional divisions.</p>
+            </div>
+            <div class="page-header-actions">
+              <button class="btn btn-primary" id="btnOpenAddDept"><i class="fa-solid fa-plus"></i> New Department</button>
+            </div>
+          </div>
+
+          <div class="grid-3" id="departmentsGrid"></div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 4: ATTENDANCE
+             ================================================================ -->
+        <section id="section-attendance" class="page-section">
+          <div class="page-header">
+            <div class="page-header-title">
+              <h1>Attendance & Time Tracking</h1>
+              <p>Daily employee check-in logs, work hours calculation, and status ledger.</p>
+            </div>
+            <div class="page-header-actions">
+              <button class="btn btn-secondary" id="btnOpenManualAtt"><i class="fa-solid fa-pen-to-square"></i> Record Manual Entry</button>
+            </div>
+          </div>
+
+          <!-- Self Check-in Banner -->
+          <div class="card" style="border-left: 4px solid var(--primary);">
+            <div class="card-body" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 4px;"><i class="fa-regular fa-clock" style="color: var(--primary); margin-right: 6px;"></i> Daily Self Attendance</h3>
+                <p id="todayAttendanceStatus" style="font-size: 0.85rem; color: var(--text-muted);">Checking status...</p>
+              </div>
+              <div style="display: flex; gap: 10px;">
+                <button class="btn btn-success" id="btnSelfCheckIn"><i class="fa-solid fa-right-to-bracket"></i> Check In</button>
+                <button class="btn btn-danger" id="btnSelfCheckOut"><i class="fa-solid fa-right-from-bracket"></i> Check Out</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <div class="filter-group">
+              <input type="date" id="attDateFilter" class="form-control">
+              <select id="attStatusFilter" class="form-control">
+                <option value="All">All Statuses</option>
+                <option value="Present">Present</option>
+                <option value="Late">Late</option>
+                <option value="Work From Home">Work From Home</option>
+                <option value="Half Day">Half Day</option>
+                <option value="Absent">Absent</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Employee</th>
+                      <th>Check-In</th>
+                      <th>Check-Out</th>
+                      <th>Work Hours</th>
+                      <th>Status</th>
+                      <th>Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody id="attendanceTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 5: LEAVES
+             ================================================================ -->
+        <section id="section-leaves" class="page-section">
+          <div class="page-header">
+            <div class="page-header-title">
+              <h1>Leave Management</h1>
+              <p>Submit vacation and medical leave requests and process managerial approvals.</p>
+            </div>
+            <div class="page-header-actions">
+              <button class="btn btn-primary" id="btnOpenApplyLeave"><i class="fa-solid fa-calendar-plus"></i> Apply for Leave</button>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <div class="filter-group">
+              <select id="leaveStatusFilter" class="form-control">
+                <option value="All">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+              <select id="leaveTypeFilter" class="form-control">
+                <option value="All">All Leave Types</option>
+                <option value="Annual Leave">Annual Leave</option>
+                <option value="Sick Leave">Sick Leave</option>
+                <option value="Casual Leave">Casual Leave</option>
+                <option value="Maternity/Paternity">Maternity/Paternity</option>
+                <option value="Unpaid Leave">Unpaid Leave</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Employee</th>
+                      <th>Leave Type</th>
+                      <th>Duration</th>
+                      <th>Total Days</th>
+                      <th>Reason</th>
+                      <th>Status</th>
+                      <th>Actions / Reviewer</th>
+                    </tr>
+                  </thead>
+                  <tbody id="leavesTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 6: ANNOUNCEMENTS
+             ================================================================ -->
+        <section id="section-announcements" class="page-section">
+          <div class="page-header">
+            <div class="page-header-title">
+              <h1>Bulletin Board & Notices</h1>
+              <p>Company-wide official communications, policy updates, and executive announcements.</p>
+            </div>
+            <div class="page-header-actions">
+              <button class="btn btn-primary" id="btnOpenAddAnnouncement"><i class="fa-solid fa-plus"></i> Post Announcement</button>
+            </div>
+          </div>
+
+          <div id="announcementsFeed"></div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 7: CRM COMPANIES
+             ================================================================ -->
+        <section id="section-companies" class="page-section">
+          <div class="page-header">
+            <div class="page-header-title">
+              <h1>Client & Account Companies</h1>
+              <p>Enterprise customer database, business verticals, and contact coordinates.</p>
+            </div>
+            <div class="page-header-actions">
+              <button class="btn btn-primary" id="btnOpenAddCompany"><i class="fa-solid fa-building-circle-arrow-right"></i> Add Company</button>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <div class="filter-group">
+              <input type="text" id="companySearchInput" class="form-control" placeholder="Search company name, domain, email..." style="min-width: 240px;">
+              <select id="companyStatusFilter" class="form-control">
+                <option value="All">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Company Name</th>
+                      <th>Industry</th>
+                      <th>Website</th>
+                      <th>Phone</th>
+                      <th>Email</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="companiesTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 8: CRM CONTACTS
+             ================================================================ -->
+        <section id="section-contacts" class="page-section">
+          <div class="page-header">
+            <div class="page-header-title">
+              <h1>Business Contacts</h1>
+              <p>Key client decision-makers, job titles, and assigned account executives.</p>
+            </div>
+            <div class="page-header-actions">
+              <button class="btn btn-primary" id="btnOpenAddContact"><i class="fa-solid fa-user-plus"></i> Add Contact</button>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <div class="filter-group">
+              <input type="text" id="contactSearchInput" class="form-control" placeholder="Search contact name, company, email..." style="min-width: 240px;">
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Contact Name</th>
+                      <th>Company</th>
+                      <th>Job Title</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="contactsTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 9: CRM LEADS & KANBAN
+             ================================================================ -->
+        <section id="section-leads" class="page-section">
+          <div class="page-header">
+            <div class="page-header-title">
+              <h1>Sales Pipeline & Deals</h1>
+              <p>Track business leads through conversion stages with interactive Kanban drag & drop.</p>
+            </div>
+            <div class="page-header-actions">
+              <div style="display: flex; gap: 4px; background: var(--bg-surface-subtle); padding: 4px; border-radius: var(--radius-md);">
+                <button class="btn btn-sm btn-primary" id="btnViewTable"><i class="fa-solid fa-table-list"></i> Table</button>
+                <button class="btn btn-sm btn-secondary" id="btnViewKanban"><i class="fa-solid fa-table-columns"></i> Kanban Board</button>
+              </div>
+              <button class="btn btn-primary" id="btnOpenAddLead"><i class="fa-solid fa-plus"></i> Create Lead</button>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <div class="filter-group">
+              <input type="text" id="leadSearchInput" class="form-control" placeholder="Search opportunity, company..." style="min-width: 240px;">
+              <select id="leadStageFilter" class="form-control">
+                <option value="All">All Stages</option>
+                <option value="New">New</option>
+                <option value="Contacted">Contacted</option>
+                <option value="Qualified">Qualified</option>
+                <option value="Proposal Sent">Proposal Sent</option>
+                <option value="Negotiation">Negotiation</option>
+                <option value="Won">Won</option>
+                <option value="Lost">Lost</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Table View Container -->
+          <div id="leadsTableView" class="card">
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Deal Title</th>
+                      <th>Contact</th>
+                      <th>Est. Value</th>
+                      <th>Stage</th>
+                      <th>Owner</th>
+                      <th>Expected Close</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="leadsTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kanban View Container -->
+          <div id="leadsKanbanView" class="kanban-board" style="display: none;"></div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 10: CRM ACTIVITIES
+             ================================================================ -->
+        <section id="section-activities" class="page-section">
+          <div class="page-header">
+            <div class="page-header-title">
+              <h1>Sales Activity Timeline</h1>
+              <p>Chronological log of customer calls, email communications, and meetings.</p>
+            </div>
+            <div class="page-header-actions">
+              <button class="btn btn-primary" id="btnOpenAddActivity"><i class="fa-solid fa-plus"></i> Log Activity</button>
+            </div>
+          </div>
+
+          <div id="activitiesFeed"></div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODALS DIALOG SYSTEM
+       ==================================================================== -->
+
+  <!-- MODAL: ADD / EDIT EMPLOYEE -->
+  <div id="employeeModal" class="modal-backdrop">
+    <div class="modal-container modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title" id="employeeModalTitle">Register New Employee</h3>
+        <button class="modal-close-btn" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="employeeForm">
+        <input type="hidden" id="empFormId">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="empFormName">Full Name <span class="req">*</span></label>
+              <input type="text" id="empFormName" class="form-input" required placeholder="e.g. John Doe">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="empFormEmail">Work Email Address <span class="req">*</span></label>
+              <input type="email" id="empFormEmail" class="form-input" required placeholder="e.g. j.doe@huminexa.com">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="empFormPhone">Phone Number</label>
+              <input type="text" id="empFormPhone" class="form-input" placeholder="+1 (555) 000-0000">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="empFormDepartment">Department <span class="req">*</span></label>
+              <select id="empFormDepartment" class="form-input" required></select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="empFormDesignation">Job Designation <span class="req">*</span></label>
+              <input type="text" id="empFormDesignation" class="form-input" required placeholder="e.g. Software Engineer">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="empFormRole">System Access Role</label>
+              <select id="empFormRole" class="form-input">
+                <option value="Employee">Employee (Self-Service)</option>
+                <option value="Sales Executive">Sales Executive (CRM)</option>
+                <option value="HR Manager">HR Manager (HRMS)</option>
+                <option value="Admin">System Administrator</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="empFormJoiningDate">Joining Date</label>
+              <input type="date" id="empFormJoiningDate" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="empFormSalary">Annual Base Salary (USD)</label>
+              <input type="number" id="empFormSalary" class="form-input" placeholder="85000">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="empFormStatus">Employment Status</label>
+              <select id="empFormStatus" class="form-input">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="empFormAddress">Residential Address</label>
+              <input type="text" id="empFormAddress" class="form-input" placeholder="City, State">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Employee Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: VIEW EMPLOYEE PROFILE -->
+  <div id="employeeDetailModal" class="modal-backdrop">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Employee Profile</h3>
+        <button class="modal-close-btn" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+          <div id="viewEmpAvatar" class="avatar-initials" style="width: 54px; height: 54px; font-size: 1.2rem;"></div>
+          <div>
+            <h3 id="viewEmpName" style="font-size: 1.2rem; font-weight: 700; color: var(--text-main);"></h3>
+            <div id="viewEmpDesignation" style="font-size: 0.85rem; color: var(--text-muted);"></div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 0.88rem;">
+          <div><strong style="color: var(--text-muted); font-size: 0.78rem; display: block;">EMPLOYEE ID</strong><span id="viewEmpId"></span></div>
+          <div><strong style="color: var(--text-muted); font-size: 0.78rem; display: block;">STATUS</strong><span id="viewEmpStatus"></span></div>
+          <div><strong style="color: var(--text-muted); font-size: 0.78rem; display: block;">EMAIL</strong><span id="viewEmpEmail"></span></div>
+          <div><strong style="color: var(--text-muted); font-size: 0.78rem; display: block;">PHONE</strong><span id="viewEmpPhone"></span></div>
+          <div><strong style="color: var(--text-muted); font-size: 0.78rem; display: block;">DEPARTMENT</strong><span id="viewEmpDepartment"></span></div>
+          <div><strong style="color: var(--text-muted); font-size: 0.78rem; display: block;">JOINED DATE</strong><span id="viewEmpJoiningDate"></span></div>
+          <div><strong style="color: var(--text-muted); font-size: 0.78rem; display: block;">SALARY</strong><span id="viewEmpSalary"></span></div>
+          <div><strong style="color: var(--text-muted); font-size: 0.78rem; display: block;">LOCATION</strong><span id="viewEmpAddress"></span></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-modal-close>Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT DEPARTMENT -->
+  <div id="deptModal" class="modal-backdrop">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="deptModalTitle">Department Setup</h3>
+        <button class="modal-close-btn" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="deptForm">
+        <input type="hidden" id="deptFormId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="deptFormName">Department Name <span class="req">*</span></label>
+            <input type="text" id="deptFormName" class="form-input" required placeholder="e.g. Engineering">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="deptFormHead">Department Head</label>
+            <input type="text" id="deptFormHead" class="form-input" placeholder="e.g. Lead Director">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="deptFormDescription">Description</label>
+            <textarea id="deptFormDescription" class="form-input" rows="3" placeholder="Core functions of this division..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Department</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: MANUAL ATTENDANCE -->
+  <div id="manualAttendanceModal" class="modal-backdrop">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Record Manual Attendance</h3>
+        <button class="modal-close-btn" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="manualAttendanceForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="manualAttEmployee">Employee <span class="req">*</span></label>
+            <select id="manualAttEmployee" class="form-input" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="manualAttDate">Date <span class="req">*</span></label>
+            <input type="date" id="manualAttDate" class="form-input" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="manualAttCheckIn">Check-in Time</label>
+              <input type="text" id="manualAttCheckIn" class="form-input" placeholder="09:00 AM">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="manualAttCheckOut">Check-out Time</label>
+              <input type="text" id="manualAttCheckOut" class="form-input" placeholder="05:00 PM">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="manualAttStatus">Status <span class="req">*</span></label>
+            <select id="manualAttStatus" class="form-input">
+              <option value="Present">Present</option>
+              <option value="Late">Late</option>
+              <option value="Work From Home">Work From Home</option>
+              <option value="Half Day">Half Day</option>
+              <option value="Absent">Absent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="manualAttNotes">Notes</label>
+            <input type="text" id="manualAttNotes" class="form-input" placeholder="e.g. Approved site duty">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Entry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: APPLY LEAVE -->
+  <div id="leaveModal" class="modal-backdrop">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Apply For Leave</h3>
+        <button class="modal-close-btn" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="leaveForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="leaveFormType">Leave Type <span class="req">*</span></label>
+            <select id="leaveFormType" class="form-input" required>
+              <option value="Annual Leave">Annual Leave</option>
+              <option value="Sick Leave">Sick Leave</option>
+              <option value="Casual Leave">Casual Leave</option>
+              <option value="Maternity/Paternity">Maternity/Paternity</option>
+              <option value="Unpaid Leave">Unpaid Leave</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="leaveStartDate">Start Date <span class="req">*</span></label>
+              <input type="date" id="leaveStartDate" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="leaveEndDate">End Date <span class="req">*</span></label>
+              <input type="date" id="leaveEndDate" class="form-input" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="leaveReason">Reason for Leave <span class="req">*</span></label>
+            <textarea id="leaveReason" class="form-input" rows="3" required placeholder="Please state clear reasons for absence..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD ANNOUNCEMENT -->
+  <div id="announcementModal" class="modal-backdrop">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Post New Bulletin</h3>
+        <button class="modal-close-btn" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="announcementForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="ancTitle">Headline / Title <span class="req">*</span></label>
+            <input type="text" id="ancTitle" class="form-input" required placeholder="e.g. Quarterly Town Hall Meeting">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ancPriority">Priority Level</label>
+            <select id="ancPriority" class="form-input">
+              <option value="Normal">Normal</option>
+              <option value="High">High</option>
+              <option value="Urgent">Urgent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ancMessage">Message Content <span class="req">*</span></label>
+            <textarea id="ancMessage" class="form-input" rows="4" required placeholder="Details of the announcement..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Publish Announcement</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT COMPANY -->
+  <div id="companyModal" class="modal-backdrop">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="companyModalTitle">Add Client Company</h3>
+        <button class="modal-close-btn" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="companyForm">
+        <input type="hidden" id="compFormId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="compName">Company Name <span class="req">*</span></label>
+            <input type="text" id="compName" class="form-input" required placeholder="e.g. Apex Global Tech">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="compIndustry">Industry Vertical</label>
+              <input type="text" id="compIndustry" class="form-input" placeholder="e.g. Software & AI">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="compWebsite">Website Domain</label>
+              <input type="url" id="compWebsite" class="form-input" placeholder="https://company.com">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="compEmail">Corporate Email <span class="req">*</span></label>
+              <input type="email" id="compEmail" class="form-input" required placeholder="contact@company.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="compPhone">Phone</label>
+              <input type="text" id="compPhone" class="form-input" placeholder="+1 (800) 555-0000">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="compAddress">Headquarters Address</label>
+              <input type="text" id="compAddress" class="form-input" placeholder="City, State">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="compStatus">Account Status</label>
+              <select id="compStatus" class="form-input">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Company Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT CONTACT -->
+  <div id="contactModal" class="modal-backdrop">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="contactModalTitle">Add New Contact</h3>
+        <button class="modal-close-btn" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="contactForm">
+        <input type="hidden" id="contactFormId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="contactName">Full Name <span class="req">*</span></label>
+            <input type="text" id="contactName" class="form-input" required placeholder="e.g. Dr. Jane Smith">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contactCompany">Associated Company <span class="req">*</span></label>
+            <select id="contactCompany" class="form-input" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contactJobTitle">Job Title</label>
+            <input type="text" id="contactJobTitle" class="form-input" placeholder="e.g. VP of Procurement">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="contactEmail">Email <span class="req">*</span></label>
+              <input type="email" id="contactEmail" class="form-input" required placeholder="name@company.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="contactPhone">Phone</label>
+              <input type="text" id="contactPhone" class="form-input" placeholder="+1 (555) 000-0000">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Contact</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT LEAD -->
+  <div id="leadModal" class="modal-backdrop">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="leadModalTitle">Create Sales Opportunity</h3>
+        <button class="modal-close-btn" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="leadForm">
+        <input type="hidden" id="leadFormId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="leadTitle">Deal / Opportunity Title <span class="req">*</span></label>
+            <input type="text" id="leadTitle" class="form-input" required placeholder="e.g. Enterprise Cloud Migration">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="leadCompany">Company <span class="req">*</span></label>
+              <select id="leadCompany" class="form-input" required></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="leadContact">Primary Contact</label>
+              <input type="text" id="leadContact" class="form-input" placeholder="Contact Person">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="leadEstimatedValue">Estimated Deal Value ($)</label>
+              <input type="number" id="leadEstimatedValue" class="form-input" placeholder="50000">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="leadSource">Lead Acquisition Source</label>
+              <select id="leadSource" class="form-input">
+                <option value="Website">Website</option>
+                <option value="Referral">Referral</option>
+                <option value="LinkedIn">LinkedIn</option>
+                <option value="Partner">Partner</option>
+                <option value="Webinar">Webinar</option>
+                <option value="Cold Outreach">Cold Outreach</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="leadStage">Pipeline Stage</label>
+              <select id="leadStage" class="form-input">
+                <option value="New">New</option>
+                <option value="Contacted">Contacted</option>
+                <option value="Qualified">Qualified</option>
+                <option value="Proposal Sent">Proposal Sent</option>
+                <option value="Negotiation">Negotiation</option>
+                <option value="Won">Won</option>
+                <option value="Lost">Lost</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="leadCloseDate">Target Closing Date</label>
+              <input type="date" id="leadCloseDate" class="form-input">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="leadNotes">Opportunity Scope / Notes</label>
+            <textarea id="leadNotes" class="form-input" rows="3" placeholder="Key customer expectations..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Opportunity</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: LOG ACTIVITY -->
+  <div id="activityModal" class="modal-backdrop">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Log Sales Interaction</h3>
+        <button class="modal-close-btn" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="activityForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="actLeadId">Related Opportunity <span class="req">*</span></label>
+            <select id="actLeadId" class="form-input" required></select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="actType">Activity Type <span class="req">*</span></label>
+              <select id="actType" class="form-input" required>
+                <option value="Call">Phone Call</option>
+                <option value="Email">Email Exchange</option>
+                <option value="Meeting">Client Meeting</option>
+                <option value="Follow-up">Follow-up</option>
+                <option value="Note">Internal Note</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="actNextFollowUp">Next Follow-up Date</label>
+              <input type="date" id="actNextFollowUp" class="form-input">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="actDescription">Interaction Summary <span class="req">*</span></label>
+            <textarea id="actDescription" class="form-input" rows="3" required placeholder="Summary of outcomes and next steps..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Log Activity</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CURRENT USER PROFILE -->
+  <div id="profileModal" class="modal-backdrop">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">My Account Profile</h3>
+        <button class="modal-close-btn" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+          <div id="profileModalAvatar" class="avatar-initials" style="width: 56px; height: 56px; font-size: 1.3rem;"></div>
+          <div>
+            <h3 id="profileModalName" style="font-size: 1.2rem; font-weight: 700; color: var(--text-main);"></h3>
+            <div id="profileModalRole" style="font-size: 0.85rem; color: var(--text-muted);"></div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.9rem;">
+          <div><strong style="color: var(--text-muted); font-size: 0.78rem; display: block;">WORK EMAIL</strong><span id="profileModalEmail"></span></div>
+          <div><strong style="color: var(--text-muted); font-size: 0.78rem; display: block;">EMPLOYEE ID</strong><span id="profileModalEmpId"></span></div>
+          <div><strong style="color: var(--text-muted); font-size: 0.78rem; display: block;">SYSTEM PRIVILEGE</strong><span>Enterprise Workspace Access (JWT Verified)</span></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-modal-close>Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Button Event Attachments -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Profile trigger
+      document.getElementById('btnOpenProfileModal')?.addEventListener('click', () => {
+        UI.openModal('profileModal');
+      });
+
+      // Logout trigger
+      document.getElementById('btnLogout')?.addEventListener('click', handleLogout);
+
+      // Notification button sample
+      document.getElementById('notificationBtn')?.addEventListener('click', () => {
+        UI.toast('info', 'Notifications', 'You have no unread system alerts.');
+      });
+
+      // Quick action triggers on dashboard
+      document.getElementById('dashBtnClockIn')?.addEventListener('click', () => {
+        navigateToSection('attendance');
+      });
+      document.getElementById('dashBtnNewLead')?.addEventListener('click', () => {
+        navigateToSection('leads');
+        LeadsModule.openAddModal();
+      });
+
+      // Employees module triggers
+      document.getElementById('btnOpenAddEmployee')?.addEventListener('click', EmployeesModule.openAddModal);
+      document.getElementById('employeeForm')?.addEventListener('submit', EmployeesModule.saveEmployee);
+      document.getElementById('empSearchInput')?.addEventListener('input', EmployeesModule.load);
+      document.getElementById('empDeptFilter')?.addEventListener('change', EmployeesModule.load);
+      document.getElementById('empStatusFilter')?.addEventListener('change', EmployeesModule.load);
+
+      // Department module triggers
+      document.getElementById('btnOpenAddDept')?.addEventListener('click', DepartmentsModule.openAddModal);
+      document.getElementById('deptForm')?.addEventListener('submit', DepartmentsModule.saveDept);
+
+      // Attendance module triggers
+      document.getElementById('btnSelfCheckIn')?.addEventListener('click', AttendanceModule.clockIn);
+      document.getElementById('btnSelfCheckOut')?.addEventListener('click', AttendanceModule.clockOut);
+      document.getElementById('btnOpenManualAtt')?.addEventListener('click', AttendanceModule.openManualModal);
+      document.getElementById('manualAttendanceForm')?.addEventListener('submit', AttendanceModule.saveManualAttendance);
+      document.getElementById('attDateFilter')?.addEventListener('change', AttendanceModule.load);
+      document.getElementById('attStatusFilter')?.addEventListener('change', AttendanceModule.load);
+
+      // Leaves module triggers
+      document.getElementById('btnOpenApplyLeave')?.addEventListener('click', LeavesModule.openApplyModal);
+      document.getElementById('leaveForm')?.addEventListener('submit', LeavesModule.submitLeave);
+      document.getElementById('leaveStatusFilter')?.addEventListener('change', LeavesModule.load);
+      document.getElementById('leaveTypeFilter')?.addEventListener('change', LeavesModule.load);
+
+      // Announcements module triggers
+      document.getElementById('btnOpenAddAnnouncement')?.addEventListener('click', AnnouncementsModule.openAddModal);
+      document.getElementById('announcementForm')?.addEventListener('submit', AnnouncementsModule.submitAnnouncement);
+
+      // Companies module triggers
+      document.getElementById('btnOpenAddCompany')?.addEventListener('click', CompaniesModule.openAddModal);
+      document.getElementById('companyForm')?.addEventListener('submit', CompaniesModule.saveCompany);
+      document.getElementById('companySearchInput')?.addEventListener('input', CompaniesModule.load);
+      document.getElementById('companyStatusFilter')?.addEventListener('change', CompaniesModule.load);
+
+      // Contacts module triggers
+      document.getElementById('btnOpenAddContact')?.addEventListener('click', ContactsModule.openAddModal);
+      document.getElementById('contactForm')?.addEventListener('submit', ContactsModule.saveContact);
+      document.getElementById('contactSearchInput')?.addEventListener('input', ContactsModule.load);
+
+      // Leads module triggers
+      document.getElementById('btnOpenAddLead')?.addEventListener('click', LeadsModule.openAddModal);
+      document.getElementById('leadForm')?.addEventListener('submit', LeadsModule.saveLead);
+      document.getElementById('btnViewTable')?.addEventListener('click', () => LeadsModule.switchView('table'));
+      document.getElementById('btnViewKanban')?.addEventListener('click', () => LeadsModule.switchView('kanban'));
+      document.getElementById('leadSearchInput')?.addEventListener('input', LeadsModule.load);
+      document.getElementById('leadStageFilter')?.addEventListener('change', LeadsModule.load);
+
+      // Activities module triggers
+      document.getElementById('btnOpenAddActivity')?.addEventListener('click', ActivitiesModule.openAddModal);
+      document.getElementById('activityForm')?.addEventListener('submit', ActivitiesModule.submitActivity);
+    });
+  </script>
+</body>
+</html>
