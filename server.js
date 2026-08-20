@@ -6,7 +6,32 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const { initDb, readData, saveData } = require('./db');
-const { JWT_SECRET, authenticateToken, authorizeRoles } = require('./middleware/authMiddleware');
+
+// Robust Auth Middleware with built-in fallback
+let JWT_SECRET, authenticateToken, authorizeRoles;
+try {
+  const authModule = require('./middleware/authMiddleware');
+  JWT_SECRET = authModule.JWT_SECRET;
+  authenticateToken = authModule.authenticateToken;
+  authorizeRoles = authModule.authorizeRoles;
+} catch (e) {
+  JWT_SECRET = process.env.JWT_SECRET || 'huminexa_enterprise_secret_key_2026_secure!';
+  authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) return res.status(401).json({ success: false, message: 'Access denied. No authentication token provided.' });
+    jwt.verify(token, JWT_SECRET, (err, decodedUser) => {
+      if (err) return res.status(403).json({ success: false, message: 'Invalid or expired session. Please login again.' });
+      req.user = decodedUser;
+      next();
+    });
+  };
+  authorizeRoles = (...allowedRoles) => (req, res, next) => {
+    if (!req.user || !req.user.role) return res.status(403).json({ success: false, message: 'Access forbidden. Role unidentified.' });
+    if (req.user.role === 'Admin' || allowedRoles.includes(req.user.role)) return next();
+    return res.status(403).json({ success: false, message: `Access denied. Role '${req.user.role}' is not authorized.` });
+  };
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
