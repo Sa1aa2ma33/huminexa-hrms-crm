@@ -10,7 +10,7 @@ try {
 }
 
 const DATA_FILE_PATH = path.join(__dirname, 'data', 'data.json');
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGODB_URL || process.env.MONGO_URI || process.env.DATABASE_URL;
 
 let inMemoryCache = null;
 let mongoClient = null;
@@ -21,12 +21,27 @@ let isMongoConnected = false;
  * Connect to MongoDB Atlas in background
  */
 async function connectMongo() {
-  if (!MONGODB_URI || !MongoClient) return;
+  if (!MONGODB_URI) {
+    console.log('[DB] No MONGODB_URI found in environment variables. Using Local JSON mode.');
+    return;
+  }
+  if (!MongoClient) {
+    console.warn('[DB Warning] mongodb npm driver package not found. Running in Local JSON mode.');
+    return;
+  }
   try {
-    mongoClient = new MongoClient(MONGODB_URI);
+    const maskedUri = MONGODB_URI.replace(/:([^@]+)@/, ':****@');
+    console.log(`[DB] Attempting MongoDB Atlas connection to: ${maskedUri}`);
+    
+    mongoClient = new MongoClient(MONGODB_URI, {
+      serverSelectionTimeoutMS: 7000,
+      connectTimeoutMS: 10000
+    });
+    
     await mongoClient.connect();
     mongoDb = mongoClient.db('huminexa');
     isMongoConnected = true;
+    
     console.log('=======================================================');
     console.log('  🍃 MongoDB Atlas Connected Successfully!');
     console.log('  📦 Real-time Cloud Persistence Active');
@@ -50,7 +65,10 @@ async function connectMongo() {
       console.log('[DB] Initialized MongoDB Atlas cloud collection with initial seed.');
     }
   } catch (err) {
-    console.warn('[DB Warning] MongoDB Atlas connection failed. Falling back to local JSON persistence:', err.message);
+    console.error('=======================================================');
+    console.error('  ❌ MongoDB Atlas Connection Failed:', err.message);
+    console.error('  ⚠️ Operating in Local JSON fallback mode.');
+    console.error('=======================================================');
     isMongoConnected = false;
   }
 }
@@ -59,9 +77,11 @@ async function connectMongo() {
  * Initialize and verify Database file
  */
 function initDb() {
-  // Trigger async connection to MongoDB if URI configured
-  if (MONGODB_URI && MongoClient && !mongoClient) {
+  if (MONGODB_URI && !mongoClient) {
+    console.log('[DB] MONGODB_URI detected. Initializing cloud connection...');
     connectMongo();
+  } else if (!MONGODB_URI) {
+    console.log('[DB] No MONGODB_URI found. Operating with local data.json.');
   }
 
   const dataDir = path.join(__dirname, 'data');
