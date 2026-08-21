@@ -2,12 +2,68 @@ const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
+let MongoClient;
+try {
+  MongoClient = require('mongodb').MongoClient;
+} catch (e) {
+  // MongoDB driver not installed or fallback
+}
+
 const DATA_FILE_PATH = path.join(__dirname, 'data', 'data.json');
+const MONGODB_URI = process.env.MONGODB_URI;
+
+let inMemoryCache = null;
+let mongoClient = null;
+let mongoDb = null;
+let isMongoConnected = false;
+
+/**
+ * Connect to MongoDB Atlas in background
+ */
+async function connectMongo() {
+  if (!MONGODB_URI || !MongoClient) return;
+  try {
+    mongoClient = new MongoClient(MONGODB_URI);
+    await mongoClient.connect();
+    mongoDb = mongoClient.db('huminexa');
+    isMongoConnected = true;
+    console.log('=======================================================');
+    console.log('  🍃 MongoDB Atlas Connected Successfully!');
+    console.log('  📦 Real-time Cloud Persistence Active');
+    console.log('=======================================================');
+
+    // Fetch cloud state and sync
+    const collection = mongoDb.collection('system_data');
+    const cloudRecord = await collection.findOne({ _id: 'huminexa_main_data' });
+    if (cloudRecord && cloudRecord.data) {
+      inMemoryCache = cloudRecord.data;
+      const tempFile = `${DATA_FILE_PATH}.tmp`;
+      fs.writeFileSync(tempFile, JSON.stringify(inMemoryCache, null, 2), 'utf-8');
+      fs.renameSync(tempFile, DATA_FILE_PATH);
+      console.log('[DB] Loaded latest persistent records from MongoDB Atlas cloud.');
+    } else if (inMemoryCache) {
+      await collection.updateOne(
+        { _id: 'huminexa_main_data' },
+        { $set: { data: inMemoryCache, updatedAt: new Date() } },
+        { upsert: true }
+      );
+      console.log('[DB] Initialized MongoDB Atlas cloud collection with initial seed.');
+    }
+  } catch (err) {
+    console.warn('[DB Warning] MongoDB Atlas connection failed. Falling back to local JSON persistence:', err.message);
+    isMongoConnected = false;
+  }
+}
 
 /**
  * Initialize and verify Database file
  */
 function initDb() {
+  // Trigger async connection to MongoDB if URI configured
+  if (MONGODB_URI && MongoClient && !mongoClient) {
+    connectMongo();
+  }
+
   const dataDir = path.join(__dirname, 'data');
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
@@ -29,9 +85,12 @@ function initDb() {
     }
   }
 
+  inMemoryCache = data;
+
   // Ensure default demo credentials are appropriately hashed
   let modified = false;
   const defaultAccounts = [
+    { email: 'sajidmansurshaikh7@gmail.com', pass: 'Admin@123', role: 'Admin', name: 'Sajid Mansur Shaikh' },
     { email: 'admin@huminexa.com', pass: 'Admin@123', role: 'Admin', name: 'Alexander Vance' },
     { email: 'hr@huminexa.com', pass: 'Hr@123', role: 'HR Manager', name: 'Eleanor Sterling' },
     { email: 'sales@huminexa.com', pass: 'Sales@123', role: 'Sales Executive', name: 'Marcus Kane' },
@@ -52,12 +111,11 @@ function initDb() {
         password: bcrypt.hashSync(acc.pass, 10),
         role: acc.role,
         designation: acc.role,
-        department: 'General',
-        employeeId: 'EMP-DEMO'
+        department: 'Executive Management',
+        employeeId: 'EMP-000'
       });
       modified = true;
     } else {
-      // If password is not a bcrypt hash or if we need to guarantee exact password
       const isMatch = bcrypt.compareSync(acc.pass, existing.password);
       if (!isMatch) {
         existing.password = bcrypt.hashSync(acc.pass, 10);
@@ -78,12 +136,16 @@ function initDb() {
  * Read data synchronously
  */
 function readData() {
+  if (inMemoryCache) {
+    return inMemoryCache;
+  }
   try {
     if (!fs.existsSync(DATA_FILE_PATH)) {
       return initDb();
     }
     const raw = fs.readFileSync(DATA_FILE_PATH, 'utf-8');
-    return JSON.parse(raw);
+    inMemoryCache = JSON.parse(raw);
+    return inMemoryCache;
   } catch (err) {
     console.error('[DB Read Error]', err);
     return initDb();
@@ -91,18 +153,30 @@ function readData() {
 }
 
 /**
- * Write data atomically to avoid file corruption
+ * Write data atomically to disk and async to MongoDB Atlas
  */
 function saveData(data) {
+  inMemoryCache = data;
   try {
     const tempFile = `${DATA_FILE_PATH}.tmp`;
     fs.writeFileSync(tempFile, JSON.stringify(data, null, 2), 'utf-8');
     fs.renameSync(tempFile, DATA_FILE_PATH);
-    return true;
   } catch (err) {
-    console.error('[DB Write Error]', err);
-    return false;
+    console.error('[DB Disk Write Error]', err);
   }
+
+  // Asynchronously sync with MongoDB Atlas if connected
+  if (isMongoConnected && mongoDb) {
+    mongoDb.collection('system_data').updateOne(
+      { _id: 'huminexa_main_data' },
+      { $set: { data: data, updatedAt: new Date() } },
+      { upsert: true }
+    ).catch(err => {
+      console.error('[MongoDB Cloud Sync Error]', err.message);
+    });
+  }
+
+  return true;
 }
 
 /**
