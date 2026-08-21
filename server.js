@@ -145,6 +145,107 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 /**
+ * POST /api/auth/register
+ * Public registration endpoint for new users
+ */
+app.post('/api/auth/register', (req, res) => {
+  const { name, email, password, role, department, designation } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({
+      success: false,
+      message: 'Please provide full name, email, and password.'
+    });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({
+      success: false,
+      message: 'Password must be at least 6 characters long.'
+    });
+  }
+
+  const db = readData();
+  const emailNormalized = email.trim().toLowerCase();
+
+  const existingUser = db.users.find(u => u.email.toLowerCase() === emailNormalized);
+  if (existingUser) {
+    return res.status(400).json({
+      success: false,
+      message: 'An account with this email already exists. Please sign in.'
+    });
+  }
+
+  const assignedRole = role || 'Employee';
+  const assignedDept = department || 'Engineering';
+  const assignedDesig = designation || (assignedRole === 'Admin' ? 'Administrator' : assignedRole === 'HR Manager' ? 'HR Specialist' : assignedRole === 'Sales Executive' ? 'Account Executive' : 'Software Engineer');
+  
+  // Calculate next employee ID
+  const empCount = (db.employees ? db.employees.length : 0) + 1;
+  const nextEmpId = 'EMP-' + String(empCount).padStart(3, '0');
+
+  const newUser = {
+    id: 'usr-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+    name: name.trim(),
+    email: emailNormalized,
+    password: bcrypt.hashSync(password.trim(), 10),
+    role: assignedRole,
+    designation: assignedDesig,
+    department: assignedDept,
+    employeeId: nextEmpId,
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+    createdAt: new Date().toISOString().replace('T', ' ').slice(0, 16)
+  };
+
+  db.users.push(newUser);
+
+  // Also create corresponding employee directory record
+  if (db.employees) {
+    const newEmp = {
+      id: 'emp-' + Date.now(),
+      employeeId: nextEmpId,
+      name: newUser.name,
+      email: newUser.email,
+      phone: '+1 (555) ' + Math.floor(100 + Math.random() * 900) + '-' + Math.floor(1000 + Math.random() * 9000),
+      department: assignedDept,
+      designation: assignedDesig,
+      role: assignedRole,
+      joiningDate: new Date().toISOString().split('T')[0],
+      salary: assignedRole === 'Admin' ? 120000 : assignedRole === 'HR Manager' ? 85000 : assignedRole === 'Sales Executive' ? 75000 : 65000,
+      status: 'Active',
+      birthDate: '1996-06-20',
+      address: 'Mumbai, India',
+      avatar: newUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+    };
+    db.employees.push(newEmp);
+  }
+
+  saveData(db);
+
+  // Generate JWT token so they are immediately logged in
+  const tokenPayload = {
+    id: newUser.id,
+    name: newUser.name,
+    email: newUser.email,
+    role: newUser.role,
+    department: newUser.department,
+    designation: newUser.designation,
+    employeeId: newUser.employeeId
+  };
+
+  const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '24h' });
+
+  return res.status(201).json({
+    success: true,
+    message: `Account created successfully! Welcome to HUMINEXA, ${newUser.name}.`,
+    data: {
+      token,
+      user: tokenPayload
+    }
+  });
+});
+
+/**
  * GET /api/auth/me
  * Returns current authenticated user
  */
@@ -1558,6 +1659,17 @@ app.post('/api/activities', authenticateToken, authorizeRoles('Admin', 'Sales Ex
   });
 });
 
+/**
+ * GET /api/database/export
+ * Export and download current live data.json directly from cloud or local server
+ */
+app.get('/api/database/export', (req, res) => {
+  const db = readData();
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Disposition', 'attachment; filename="data.json"');
+  res.send(JSON.stringify(db, null, 2));
+});
+
 /* ==========================================================================
    STATIC FALLBACK & 404 HANDLER
    ========================================================================== */
@@ -1595,11 +1707,16 @@ app.get('*', (req, res) => {
   }
 });
 
-// Start Server
-app.listen(PORT, () => {
+// Health check endpoint for cloud load balancers
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'healthy', time: new Date().toISOString() });
+});
+
+// Start Server with explicit 0.0.0.0 host binding for cloud environments
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`=======================================================`);
   console.log(`  🚀 HUMINEXA HRMS & CRM Management System`);
-  console.log(`  🌐 Server running at: http://localhost:${PORT}`);
+  console.log(`  🌐 Server running at: http://0.0.0.0:${PORT}`);
   console.log(`  🔑 Default Admin: admin@huminexa.com | Admin@123`);
   console.log(`=======================================================`);
 });

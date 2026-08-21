@@ -43,18 +43,29 @@
           </button>
         </div>
 
-        <div style="margin-bottom: 24px;">
-          <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">Sign In to Workspace</h2>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">Access your unified HR management and sales pipeline platform.</p>
+        <div style="margin-bottom: 20px;">
+          <h2 id="authHeading" style="font-size: 1.4rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">Sign In to Workspace</h2>
+          <p id="authSubheading" style="font-size: 0.85rem; color: var(--text-muted);">Access your unified HR management and sales pipeline platform.</p>
+        </div>
+
+        <!-- AUTH MODE SWITCHER TABS -->
+        <div style="display: flex; gap: 6px; margin-bottom: 20px; background: var(--bg-surface-subtle); padding: 4px; border-radius: var(--radius-md);">
+          <button type="button" id="tabSignInBtn" class="btn btn-primary" style="flex: 1; padding: 8px 12px; font-size: 0.85rem; border-radius: var(--radius-sm);">
+            <i class="fa-solid fa-right-to-bracket" style="margin-right: 4px;"></i> Sign In
+          </button>
+          <button type="button" id="tabSignUpBtn" class="btn btn-outline" style="flex: 1; padding: 8px 12px; font-size: 0.85rem; border-radius: var(--radius-sm); border: none; background: transparent; color: var(--text-muted);">
+            <i class="fa-solid fa-user-plus" style="margin-right: 4px;"></i> Create Account
+          </button>
         </div>
 
         <div id="loginErrorAlert" class="badge badge-absent" style="display: none; width: 100%; padding: 10px 14px; margin-bottom: 16px; font-size: 0.85rem;"></div>
 
+        <!-- 1. LOGIN FORM -->
         <form id="loginForm">
           <div class="form-group">
             <label class="form-label" for="email">Work Email Address <span class="req">*</span></label>
             <div style="position: relative;">
-              <input type="email" id="email" class="form-input" placeholder="e.g. admin@huminexa.com" required autocomplete="email" style="padding-left: 38px;">
+              <input type="email" id="email" class="form-input" placeholder="e.g. yourname@gmail.com" required autocomplete="email" style="padding-left: 38px;">
               <i class="fa-solid fa-envelope" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
             </div>
           </div>
@@ -72,6 +83,59 @@
 
           <button type="submit" id="loginSubmitBtn" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 10px; font-size: 0.95rem;">
             Sign In to Workspace <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </form>
+
+        <!-- 2. SIGN UP / REGISTRATION FORM -->
+        <form id="registerForm" style="display: none;">
+          <div class="form-group">
+            <label class="form-label" for="regName">Full Name <span class="req">*</span></label>
+            <div style="position: relative;">
+              <input type="text" id="regName" class="form-input" placeholder="e.g. John Doe" required style="padding-left: 38px;">
+              <i class="fa-solid fa-user" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="regEmail">Your Email Address <span class="req">*</span></label>
+            <div style="position: relative;">
+              <input type="email" id="regEmail" class="form-input" placeholder="e.g. yourname@gmail.com" required style="padding-left: 38px;">
+              <i class="fa-solid fa-envelope" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="regPassword">Create Password <span class="req">*</span> (min 6 characters)</label>
+            <div style="position: relative;">
+              <input type="password" id="regPassword" class="form-input" placeholder="••••••••••••" required minlength="6" style="padding-left: 38px;">
+              <i class="fa-solid fa-lock" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+            </div>
+          </div>
+
+          <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label class="form-label" for="regRole">Role <span class="req">*</span></label>
+              <select id="regRole" class="form-select" required>
+                <option value="Employee" selected>Employee</option>
+                <option value="Sales Executive">Sales Executive</option>
+                <option value="HR Manager">HR Manager</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="regDept">Department</label>
+              <select id="regDept" class="form-select">
+                <option value="Engineering" selected>Engineering</option>
+                <option value="Human Resources">Human Resources</option>
+                <option value="Sales & Marketing">Sales & Marketing</option>
+                <option value="Finance & Operations">Finance & Operations</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" id="regSubmitBtn" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 10px; font-size: 0.95rem;">
+            Create Account & Access Workspace <i class="fa-solid fa-rocket"></i>
           </button>
         </form>
 

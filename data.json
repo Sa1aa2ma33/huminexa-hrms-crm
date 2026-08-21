@@ -1,6 +1,17 @@
 {
   "users": [
     {
+      "id": "usr-admin-sajid",
+      "name": "Sajid Mansur Shaikh",
+      "email": "sajidmansurshaikh7@gmail.com",
+      "password": "$2a$10$iFaPLv0HnayMevRX0UuaLu8qp2HhxlWnLQloM4qcX5mOusEYtpfvy",
+      "role": "Admin",
+      "designation": "System Architect & Super Admin",
+      "department": "Executive Management",
+      "employeeId": "EMP-000",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
+    },
+    {
       "id": "usr-admin-01",
       "name": "Alexander Vance",
       "email": "admin@huminexa.com",
@@ -73,6 +84,13 @@
       "head": "Julian Price",
       "description": "Financial planning, accounting compliance, supply chain, and general operations.",
       "createdAt": "2024-02-01"
+    },
+    {
+      "id": "dept-1787245734065",
+      "name": "Cloud Engineer",
+      "head": "Sajid Shiakh",
+      "description": "Data Managing",
+      "createdAt": "2026-08-20"
     }
   ],
   "employees": [
@@ -283,8 +301,10 @@
       "endDate": "2026-08-28",
       "totalDays": 4,
       "reason": "Family vacation and personal travel.",
-      "status": "Pending",
-      "appliedAt": "2026-08-19"
+      "status": "Approved",
+      "appliedAt": "2026-08-19",
+      "reviewedBy": "Alexander Vance",
+      "reviewedAt": "2026-08-20"
     },
     {
       "id": "lev-2",
@@ -308,8 +328,10 @@
       "endDate": "2026-09-02",
       "totalDays": 2,
       "reason": "Home relocation and utilities setup.",
-      "status": "Pending",
-      "appliedAt": "2026-08-18"
+      "status": "Rejected",
+      "appliedAt": "2026-08-18",
+      "reviewedBy": "Alexander Vance",
+      "reviewedAt": "2026-08-20"
     },
     {
       "id": "lev-4",
