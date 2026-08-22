@@ -10,19 +10,60 @@ try {
 }
 
 const DATA_FILE_PATH = path.join(__dirname, 'data', 'data.json');
-const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGODB_URL || process.env.MONGO_URI || process.env.DATABASE_URL;
 
 let inMemoryCache = null;
 let mongoClient = null;
 let mongoDb = null;
 let isMongoConnected = false;
 
+function getMongoUri() {
+  // Check all possible variable names and trim whitespace/quotes
+  const possible = [
+    process.env.MONGODB_URI,
+    process.env.MONGODB_URL,
+    process.env.MONGO_URI,
+    process.env.DATABASE_URL
+  ];
+  for (let val of possible) {
+    if (val && typeof val === 'string' && val.trim().length > 0) {
+      let clean = val.trim().replace(/^['"]|['"]$/g, '');
+      
+      // Auto-repair missing cluster name after @ (e.g. @.w0xka6e.mongodb.net -> @huminexa-db.w0xka6e.mongodb.net)
+      if (clean.includes('@.') && clean.includes('.mongodb.net')) {
+        clean = clean.replace('@.', '@huminexa-db.');
+        console.log('[DB Auto-Fix] Automatically inserted missing cluster prefix: huminexa-db');
+      }
+
+      // Auto-repair missing '@' if user accidentally typed '.' between password and host
+      if (clean.startsWith('mongodb+srv://') && !clean.includes('@') && clean.includes('.mongodb.net')) {
+        const parts = clean.split('.mongodb.net');
+        const prefix = parts[0];
+        const lastColonIdx = prefix.indexOf(':', 'mongodb+srv://'.length);
+        if (lastColonIdx !== -1) {
+          const passAndHost = prefix.substring(lastColonIdx + 1);
+          const dotIdx = passAndHost.lastIndexOf('.');
+          if (dotIdx !== -1) {
+            const user = prefix.substring(0, lastColonIdx);
+            const pass = passAndHost.substring(0, dotIdx);
+            const host = passAndHost.substring(dotIdx + 1);
+            clean = `${user}:${pass}@${host.startsWith('.') ? 'huminexa-db' + host : host}.mongodb.net${parts.slice(1).join('.mongodb.net')}`;
+            console.log('[DB Auto-Fix] Repaired missing @ in MongoDB connection string.');
+          }
+        }
+      }
+      return clean;
+    }
+  }
+  return '';
+}
+
 /**
  * Connect to MongoDB Atlas in background
  */
-async function connectMongo() {
-  if (!MONGODB_URI) {
-    console.log('[DB] No MONGODB_URI found in environment variables. Using Local JSON mode.');
+async function connectMongo(customUri) {
+  const uri = customUri || getMongoUri();
+  if (!uri) {
+    console.log('[DB] No MONGODB_URI found. Operating with local data.json.');
     return;
   }
   if (!MongoClient) {
@@ -30,11 +71,11 @@ async function connectMongo() {
     return;
   }
   try {
-    const maskedUri = MONGODB_URI.replace(/:([^@]+)@/, ':****@');
-    console.log(`[DB] Attempting MongoDB Atlas connection to: ${maskedUri}`);
+    const maskedUri = uri.replace(/:([^@]+)@/, ':****@');
+    console.log(`[DB] Connecting to MongoDB Atlas: ${maskedUri}`);
     
-    mongoClient = new MongoClient(MONGODB_URI, {
-      serverSelectionTimeoutMS: 7000,
+    mongoClient = new MongoClient(uri, {
+      serverSelectionTimeoutMS: 8000,
       connectTimeoutMS: 10000
     });
     
@@ -77,11 +118,14 @@ async function connectMongo() {
  * Initialize and verify Database file
  */
 function initDb() {
-  if (MONGODB_URI && !mongoClient) {
+  const uri = getMongoUri();
+  
+  if (uri && !mongoClient) {
     console.log('[DB] MONGODB_URI detected. Initializing cloud connection...');
-    connectMongo();
-  } else if (!MONGODB_URI) {
-    console.log('[DB] No MONGODB_URI found. Operating with local data.json.');
+    connectMongo(uri);
+  } else if (!uri) {
+    const activeKeys = Object.keys(process.env).filter(k => !k.startsWith('npm_') && !k.startsWith('NODE_')).join(', ');
+    console.log(`[DB] No MONGODB_URI detected. Active env keys: [${activeKeys}]`);
   }
 
   const dataDir = path.join(__dirname, 'data');

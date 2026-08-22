@@ -204,23 +204,261 @@ function setupGlobalControls() {
     });
   });
 
-  // Global Quick Search
-  const globalSearchInput = document.getElementById('globalSearchInput');
-  if (globalSearchInput) {
-    globalSearchInput.addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase();
-      // Route search to active table if applicable
-      const activeSection = document.querySelector('.page-section.active');
-      if (activeSection) {
-        const table = activeSection.querySelector('table tbody');
-        if (table) {
-          const rows = table.querySelectorAll('tr');
-          rows.forEach(row => {
-            row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
-          });
-        }
+  // Global Quick Search Engine with Categorized Instant Results
+  setupGlobalSearch();
+}
+
+/**
+ * Global Search Controller with Live Categorized Popup Results
+ */
+function setupGlobalSearch() {
+  const input = document.getElementById('globalSearchInput');
+  const resultsContainer = document.getElementById('globalSearchResults');
+  if (!input || !resultsContainer) return;
+
+  let searchTimeout = null;
+
+  // Keyboard shortcut Ctrl+K or / to focus search
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      input.focus();
+      input.select();
+    } else if (e.key === 'Escape') {
+      closeSearch();
+    }
+  });
+
+  input.addEventListener('input', (e) => {
+    clearTimeout(searchTimeout);
+    const query = e.target.value.trim();
+
+    // Also filter active page table if present
+    const activeSection = document.querySelector('.page-section.active');
+    if (activeSection) {
+      const table = activeSection.querySelector('table tbody');
+      if (table) {
+        const rows = table.querySelectorAll('tr');
+        rows.forEach(row => {
+          row.style.display = row.textContent.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
+        });
       }
-    });
+    }
+
+    if (query.length < 2) {
+      closeSearch();
+      return;
+    }
+
+    searchTimeout = setTimeout(() => {
+      performSearch(query);
+    }, 180);
+  });
+
+  input.addEventListener('focus', () => {
+    if (input.value.trim().length >= 2) {
+      performSearch(input.value.trim());
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!input.contains(e.target) && !resultsContainer.contains(e.target)) {
+      closeSearch();
+    }
+  });
+
+  function closeSearch() {
+    resultsContainer.classList.remove('show');
+    resultsContainer.innerHTML = '';
+  }
+
+  async function performSearch(query) {
+    const q = query.toLowerCase();
+    resultsContainer.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 0.85rem;"><i class="fa-solid fa-spinner fa-spin"></i> Searching records...</div>';
+    resultsContainer.classList.add('show');
+
+    try {
+      // Fetch datasets concurrently
+      const [empRes, compRes, contRes, leadRes, deptRes] = await Promise.all([
+        API.get('/api/employees'),
+        API.get('/api/companies'),
+        API.get('/api/contacts'),
+        API.get('/api/leads'),
+        API.get('/api/departments')
+      ]);
+
+      const employees = (empRes.success && empRes.data ? empRes.data : []).filter(e => 
+        (e.name && e.name.toLowerCase().includes(q)) ||
+        (e.email && e.email.toLowerCase().includes(q)) ||
+        (e.department && e.department.toLowerCase().includes(q)) ||
+        (e.designation && e.designation.toLowerCase().includes(q)) ||
+        (e.employeeId && e.employeeId.toLowerCase().includes(q))
+      );
+
+      const companies = (compRes.success && compRes.data ? compRes.data : []).filter(c =>
+        (c.name && c.name.toLowerCase().includes(q)) ||
+        (c.industry && c.industry.toLowerCase().includes(q)) ||
+        (c.city && c.city.toLowerCase().includes(q))
+      );
+
+      const contacts = (contRes.success && contRes.data ? contRes.data : []).filter(c =>
+        (c.name && c.name.toLowerCase().includes(q)) ||
+        (c.email && c.email.toLowerCase().includes(q)) ||
+        (c.company && c.company.toLowerCase().includes(q)) ||
+        (c.phone && c.phone.toLowerCase().includes(q))
+      );
+
+      const leads = (leadRes.success && leadRes.data ? leadRes.data : []).filter(l =>
+        (l.title && l.title.toLowerCase().includes(q)) ||
+        (l.company && l.company.toLowerCase().includes(q)) ||
+        (l.stage && l.stage.toLowerCase().includes(q))
+      );
+
+      const departments = (deptRes.success && deptRes.data ? deptRes.data : []).filter(d =>
+        (d.name && d.name.toLowerCase().includes(q)) ||
+        (d.head && d.head.toLowerCase().includes(q))
+      );
+
+      const totalMatches = employees.length + companies.length + contacts.length + leads.length + departments.length;
+
+      if (totalMatches === 0) {
+        resultsContainer.innerHTML = `
+          <div style="padding: 24px; text-align: center; color: var(--text-muted);">
+            <i class="fa-solid fa-folder-open" style="font-size: 1.6rem; opacity: 0.5; margin-bottom: 8px;"></i>
+            <div style="font-size: 0.88rem; font-weight: 600; color: var(--text-main);">No matching records found</div>
+            <div style="font-size: 0.78rem; margin-top: 4px;">No records match "${UI.escapeHtml(query)}"</div>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+
+      // 1. EMPLOYEES
+      if (employees.length > 0) {
+        html += `<div class="search-category-title"><i class="fa-solid fa-users" style="color: var(--primary);"></i> Employees (${employees.length})</div>`;
+        employees.slice(0, 3).forEach(emp => {
+          html += `
+            <div class="search-result-item" data-action="employee" data-emp-id="${emp.id}" data-name="${UI.escapeHtml(emp.name)}">
+              <div class="search-result-icon"><i class="fa-solid fa-user"></i></div>
+              <div class="search-result-info">
+                <div class="search-result-primary">${UI.escapeHtml(emp.name)}</div>
+                <div class="search-result-secondary">${UI.escapeHtml(emp.designation || 'Staff')} &bull; ${UI.escapeHtml(emp.department || '')}</div>
+              </div>
+              <span class="search-result-badge">${emp.employeeId || 'STAFF'}</span>
+            </div>
+          `;
+        });
+      }
+
+      // 2. COMPANIES
+      if (companies.length > 0) {
+        html += `<div class="search-category-title"><i class="fa-solid fa-building" style="color: #0EA5E9;"></i> Companies (${companies.length})</div>`;
+        companies.slice(0, 3).forEach(comp => {
+          html += `
+            <div class="search-result-item" data-action="company" data-name="${UI.escapeHtml(comp.name)}">
+              <div class="search-result-icon" style="background: rgba(14, 165, 233, 0.12); color: #0EA5E9;"><i class="fa-solid fa-building"></i></div>
+              <div class="search-result-info">
+                <div class="search-result-primary">${UI.escapeHtml(comp.name)}</div>
+                <div class="search-result-secondary">${UI.escapeHtml(comp.industry || 'Enterprise')} &bull; ${UI.escapeHtml(comp.city || 'Global')}</div>
+              </div>
+              <span class="search-result-badge">COMPANY</span>
+            </div>
+          `;
+        });
+      }
+
+      // 3. CONTACTS
+      if (contacts.length > 0) {
+        html += `<div class="search-category-title"><i class="fa-solid fa-address-book" style="color: #10B981;"></i> Contacts (${contacts.length})</div>`;
+        contacts.slice(0, 3).forEach(cont => {
+          html += `
+            <div class="search-result-item" data-action="contact" data-name="${UI.escapeHtml(cont.name)}">
+              <div class="search-result-icon" style="background: rgba(16, 185, 129, 0.12); color: #10B981;"><i class="fa-solid fa-address-card"></i></div>
+              <div class="search-result-info">
+                <div class="search-result-primary">${UI.escapeHtml(cont.name)}</div>
+                <div class="search-result-secondary">${UI.escapeHtml(cont.email || '')} &bull; ${UI.escapeHtml(cont.company || '')}</div>
+              </div>
+              <span class="search-result-badge">LEAD</span>
+            </div>
+          `;
+        });
+      }
+
+      // 4. DEALS / LEADS
+      if (leads.length > 0) {
+        html += `<div class="search-category-title"><i class="fa-solid fa-chart-line" style="color: #F59E0B;"></i> Deals & Pipeline (${leads.length})</div>`;
+        leads.slice(0, 3).forEach(lead => {
+          html += `
+            <div class="search-result-item" data-action="lead" data-title="${UI.escapeHtml(lead.title)}">
+              <div class="search-result-icon" style="background: rgba(245, 158, 11, 0.12); color: #F59E0B;"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+              <div class="search-result-info">
+                <div class="search-result-primary">${UI.escapeHtml(lead.title)}</div>
+                <div class="search-result-secondary">${UI.escapeHtml(lead.company || '')} &bull; $${(lead.value || 0).toLocaleString()}</div>
+              </div>
+              <span class="search-result-badge">${lead.stage || 'DEAL'}</span>
+            </div>
+          `;
+        });
+      }
+
+      // 5. DEPARTMENTS
+      if (departments.length > 0) {
+        html += `<div class="search-category-title"><i class="fa-solid fa-sitemap" style="color: #8B5CF6;"></i> Departments (${departments.length})</div>`;
+        departments.slice(0, 3).forEach(dept => {
+          html += `
+            <div class="search-result-item" data-action="department" data-name="${UI.escapeHtml(dept.name)}">
+              <div class="search-result-icon" style="background: rgba(139, 92, 246, 0.12); color: #8B5CF6;"><i class="fa-solid fa-sitemap"></i></div>
+              <div class="search-result-info">
+                <div class="search-result-primary">${UI.escapeHtml(dept.name)}</div>
+                <div class="search-result-secondary">Head: ${UI.escapeHtml(dept.head || 'TBD')}</div>
+              </div>
+              <span class="search-result-badge">DEPT</span>
+            </div>
+          `;
+        });
+      }
+
+      resultsContainer.innerHTML = html;
+
+      // Attach click events on results
+      resultsContainer.querySelectorAll('.search-result-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const action = item.getAttribute('data-action');
+          if (action === 'employee') {
+            navigateToSection('employees');
+            const empSearch = document.getElementById('empSearchInput');
+            if (empSearch) {
+              empSearch.value = item.getAttribute('data-name');
+              EmployeesModule.load();
+            }
+          } else if (action === 'company') {
+            navigateToSection('companies');
+            const compSearch = document.getElementById('companySearchInput');
+            if (compSearch) {
+              compSearch.value = item.getAttribute('data-name');
+              CompaniesModule.load();
+            }
+          } else if (action === 'contact') {
+            navigateToSection('contacts');
+            const contSearch = document.getElementById('contactSearchInput');
+            if (contSearch) {
+              contSearch.value = item.getAttribute('data-name');
+              ContactsModule.load();
+            }
+          } else if (action === 'lead') {
+            navigateToSection('leads');
+          } else if (action === 'department') {
+            navigateToSection('departments');
+          }
+          closeSearch();
+        });
+      });
+
+    } catch (err) {
+      console.error('[Global Search Error]', err);
+      resultsContainer.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--danger); font-size: 0.85rem;">Search encountered an error.</div>';
+    }
   }
 }
 
