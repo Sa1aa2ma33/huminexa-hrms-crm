@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HUMINEXA — HRMS & CRM Management System | Login</title>
+  <title>HUMINEXA — Enterprise HRMS & CRM Management Platform</title>
   
   <!-- Favicon / Brand SVG -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234F46E5'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
   
-  <!-- Google Fonts: Inter -->
+  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- FontAwesome 6 CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -19,36 +19,303 @@
   <!-- Application CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="login-page">
+<body class="landing-page-body">
 
-  <div class="login-container">
+  <!-- ========================================================================
+       TOP NAVIGATION BAR (Matches Exact Layout)
+       ======================================================================== -->
+  <header class="landing-navbar">
+    <div class="landing-nav-container">
+      <a href="#home" class="landing-brand">
+        <div class="landing-brand-logo">
+          <i class="fa-solid fa-layer-group"></i>
+        </div>
+        <span class="landing-brand-text">HUMINEXA</span>
+      </a>
+      
+      <nav class="landing-nav-menu">
+        <a href="#home" class="nav-link active">Home</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+      
+      <div class="landing-nav-actions">
+        <button id="landingThemeToggle" class="topbar-btn" title="Switch Theme">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <button class="btn btn-primary btn-dashboard-cta" id="btnNavDashboard">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       HERO SECTION
+       ======================================================================== -->
+  <section class="landing-hero" id="home">
+    <div class="landing-badge">
+      <i class="fa-solid fa-sparkles"></i> Cloud-Native Enterprise Management Platform
+    </div>
+
+    <h1>Empowering People. <span class="gradient-text">Accelerating Growth.</span></h1>
     
-    <!-- LEFT PANEL: LOGIN FORM -->
-    <div class="login-left">
-      <div class="login-card">
+    <p class="hero-subtitle">
+      The unified business operating system combining workforce administration (HRMS) with interactive B2B customer sales pipelines (CRM) on a single pane of glass.
+    </p>
+
+    <div class="hero-cta-group">
+      <button class="btn btn-primary" id="btnHeroOpenDashboard" style="padding: 14px 28px; font-size: 1rem; border-radius: var(--radius-md); box-shadow: 0 4px 18px rgba(79, 70, 229, 0.4);">
+        Access Workspace Dashboard <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>
+      </button>
+      <a href="#features" class="btn btn-outline" style="padding: 14px 24px; font-size: 1rem; border-radius: var(--radius-md);">
+        Explore Features <i class="fa-solid fa-arrow-down" style="margin-left: 6px;"></i>
+      </a>
+    </div>
+
+    <!-- Live Architecture Highlights -->
+    <div class="hero-stats-row">
+      <div class="stat-pill">
+        <i class="fa-solid fa-leaf" style="color: #10B981;"></i>
+        <span>MongoDB Atlas Cloud Persistence</span>
+      </div>
+      <div class="stat-pill">
+        <i class="fa-solid fa-shield-halved" style="color: #4F46E5;"></i>
+        <span>Stateless JWT & RBAC Security</span>
+      </div>
+      <div class="stat-pill">
+        <i class="fa-solid fa-bolt" style="color: #F59E0B;"></i>
+        <span>Sub-Second Fast REST APIs</span>
+      </div>
+    </div>
+
+    <!-- Interactive Visual Product Showcase -->
+    <div class="preview-mockup-wrapper">
+      <div style="background: #0F172A; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1E293B;">
+        <div style="display: flex; gap: 8px;">
+          <div style="width: 12px; height: 12px; border-radius: 50%; background: #EF4444;"></div>
+          <div style="width: 12px; height: 12px; border-radius: 50%; background: #F59E0B;"></div>
+          <div style="width: 12px; height: 12px; border-radius: 50%; background: #10B981;"></div>
+        </div>
+        <div style="background: #1E293B; color: #94A3B8; font-size: 0.8rem; padding: 4px 20px; border-radius: 6px; font-family: monospace;">
+          https://huminexa-hrms-crm.onrender.com/dashboard.html
+        </div>
+        <div style="color: #64748B; font-size: 0.85rem;"><i class="fa-solid fa-lock"></i> SSL Secured</div>
+      </div>
+      
+      <svg viewBox="0 0 1100 520" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; display: block; background: #0B1120;">
+        <!-- Left Sidebar Mockup -->
+        <rect x="0" y="0" width="220" height="520" fill="#0F172A" />
+        <rect x="20" y="24" width="180" height="32" rx="6" fill="#1E293B" />
+        <circle cx="36" cy="40" r="10" fill="#4F46E5" />
+        <rect x="54" y="35" width="80" height="10" rx="3" fill="#FFFFFF" />
         
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-          <div class="brand-header">
-            <div class="brand-icon">
-              <i class="fa-solid fa-layer-group"></i>
-            </div>
-            <div>
-              <div class="brand-title">HUMINEXA</div>
-              <div class="brand-tagline">Empowering People. Managing Growth.</div>
-            </div>
+        <!-- Sidebar Links -->
+        <rect x="20" y="80" width="180" height="34" rx="6" fill="#4F46E5" />
+        <rect x="54" y="92" width="90" height="10" rx="3" fill="#FFFFFF" />
+        <rect x="20" y="126" width="180" height="30" rx="6" fill="transparent" />
+        <rect x="54" y="136" width="75" height="10" rx="3" fill="#64748B" />
+        <rect x="20" y="168" width="180" height="30" rx="6" fill="transparent" />
+        <rect x="54" y="178" width="85" height="10" rx="3" fill="#64748B" />
+        <rect x="20" y="210" width="180" height="30" rx="6" fill="transparent" />
+        <rect x="54" y="220" width="65" height="10" rx="3" fill="#64748B" />
+        <rect x="20" y="252" width="180" height="30" rx="6" fill="transparent" />
+        <rect x="54" y="262" width="90" height="10" rx="3" fill="#64748B" />
+
+        <!-- Main Content Area -->
+        <!-- KPI Cards -->
+        <rect x="245" y="30" width="190" height="85" rx="10" fill="#1E293B" stroke="#334155" />
+        <circle cx="275" cy="55" r="14" fill="#4F46E5" />
+        <rect x="300" y="48" width="60" height="12" rx="3" fill="#818CF8" />
+        <rect x="275" y="80" width="95" height="18" rx="4" fill="#FFFFFF" />
+
+        <rect x="455" y="30" width="190" height="85" rx="10" fill="#1E293B" stroke="#334155" />
+        <circle cx="485" cy="55" r="14" fill="#10B981" />
+        <rect x="510" y="48" width="60" height="12" rx="3" fill="#34D399" />
+        <rect x="485" y="80" width="95" height="18" rx="4" fill="#FFFFFF" />
+
+        <rect x="665" y="30" width="190" height="85" rx="10" fill="#1E293B" stroke="#334155" />
+        <circle cx="695" cy="55" r="14" fill="#0EA5E9" />
+        <rect x="720" y="48" width="60" height="12" rx="3" fill="#38BDF8" />
+        <rect x="695" y="80" width="95" height="18" rx="4" fill="#FFFFFF" />
+
+        <rect x="875" y="30" width="195" height="85" rx="10" fill="#1E293B" stroke="#334155" />
+        <circle cx="905" cy="55" r="14" fill="#F59E0B" />
+        <rect x="930" y="48" width="60" height="12" rx="3" fill="#FBBF24" />
+        <rect x="905" y="80" width="105" height="18" rx="4" fill="#FFFFFF" />
+
+        <!-- Chart 1: Attendance Doughnut Area -->
+        <rect x="245" y="135" width="370" height="230" rx="10" fill="#1E293B" stroke="#334155" />
+        <rect x="265" y="155" width="140" height="14" rx="3" fill="#FFFFFF" />
+        <circle cx="430" cy="255" r="55" stroke="#334155" stroke-width="18" fill="none" />
+        <circle cx="430" cy="255" r="55" stroke="#4F46E5" stroke-width="18" stroke-dasharray="210 350" fill="none" />
+        <circle cx="430" cy="255" r="55" stroke="#10B981" stroke-width="18" stroke-dasharray="90 350" stroke-dashoffset="-210" fill="none" />
+
+        <!-- Chart 2: CRM Sales Pipeline Funnel Area -->
+        <rect x="635" y="135" width="435" height="230" rx="10" fill="#1E293B" stroke="#334155" />
+        <rect x="655" y="155" width="160" height="14" rx="3" fill="#FFFFFF" />
+        <rect x="665" y="290" width="45" height="50" rx="4" fill="#4F46E5" />
+        <rect x="735" y="250" width="45" height="90" rx="4" fill="#0EA5E9" />
+        <rect x="805" y="210" width="45" height="130" rx="4" fill="#8B5CF6" />
+        <rect x="875" y="230" width="45" height="110" rx="4" fill="#F59E0B" />
+        <rect x="945" y="180" width="45" height="160" rx="4" fill="#10B981" />
+
+        <!-- Lower Section: Kanban Columns Preview -->
+        <rect x="245" y="385" width="825" height="115" rx="10" fill="#1E293B" stroke="#334155" />
+        <rect x="265" y="405" width="140" height="12" rx="3" fill="#94A3B8" />
+        <rect x="265" y="430" width="180" height="50" rx="6" fill="#0F172A" stroke="#334155" />
+        <rect x="465" y="430" width="180" height="50" rx="6" fill="#0F172A" stroke="#334155" />
+        <rect x="665" y="430" width="180" height="50" rx="6" fill="#0F172A" stroke="#334155" />
+        <rect x="865" y="430" width="180" height="50" rx="6" fill="#0F172A" stroke="#334155" />
+      </svg>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       FEATURES SECTION
+       ======================================================================== -->
+  <section class="landing-section" id="features">
+    <div class="section-header-center">
+      <div class="landing-badge">Everything You Need</div>
+      <h2>Enterprise Features for Modern Teams</h2>
+      <p>Seamlessly integrate workforce operations and client relationship tracking with automated workflows and real-time cloud data.</p>
+    </div>
+
+    <div class="features-grid">
+      <!-- Feature 1 -->
+      <div class="feature-card">
+        <div class="feature-icon-wrapper" style="background: rgba(79, 70, 229, 0.12); color: #4F46E5;">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <h3>Workforce & Employee Directory</h3>
+        <p>Centralized employee profiles, automated EMP-ID generation, department allocation, salary grading, and active employment statuses.</p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="feature-card">
+        <div class="feature-icon-wrapper" style="background: rgba(16, 185, 129, 0.12); color: #10B981;">
+          <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <h3>Time, Attendance & Leaves</h3>
+        <p>1-Click self-punching clock in/out with automated daily work-hour computation, attendance history, and tiered leave approval matrix.</p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="feature-card">
+        <div class="feature-icon-wrapper" style="background: rgba(14, 165, 233, 0.12); color: #0EA5E9;">
+          <i class="fa-solid fa-chart-kanban"></i>
+        </div>
+        <h3>Visual Sales Deals Kanban</h3>
+        <p>5-Stage interactive HTML5 Drag-and-Drop opportunity pipeline (New, Qualified, Proposal, Negotiation, Won) with real-time revenue summaries.</p>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="feature-card">
+        <div class="feature-icon-wrapper" style="background: rgba(139, 92, 246, 0.12); color: #8B5CF6;">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h3>Role-Based Access Control (RBAC)</h3>
+        <p>Cryptographic JWT bearer session tokens protecting 4 distinct role tiers: Super Admin, HR Manager, Sales Executive, and Employee.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       ABOUT & SYSTEM ARCHITECTURE SECTION
+       ======================================================================== -->
+  <section class="landing-section" id="about" style="background: var(--bg-surface-subtle); border-radius: var(--radius-xl);">
+    <div class="section-header-center">
+      <div class="landing-badge">System Architecture</div>
+      <h2>Engineered for Scale and Simplicity</h2>
+      <p>Developed as a full-stack summer internship capstone project at Shivajirao S. Jondhle Polytechnic, Asangaon.</p>
+    </div>
+
+    <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+      <div class="feature-card" style="background: var(--bg-surface);">
+        <h3><i class="fa-solid fa-server" style="color: #4F46E5; margin-right: 8px;"></i> 3-Tier Web Architecture</h3>
+        <p>Decoupled Presentation Layer (SPA), Application API Layer (Express.js REST controllers), and MongoDB Atlas Cloud Persistence with atomic write fallbacks.</p>
+      </div>
+
+      <div class="feature-card" style="background: var(--bg-surface);">
+        <h3><i class="fa-solid fa-graduation-cap" style="color: #10B981; margin-right: 8px;"></i> Academic Project Team</h3>
+        <p><strong>Group 2:</strong> Sajid Mansur Shaikh (<code>24112090690</code>) & Aayan Firoj Shaikh (<code>24112090680</code>)<br><strong>Mentor:</strong> Prof. Shruthi Nandargi | Department of Information Technology</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       CONTACT SECTION
+       ======================================================================== -->
+  <section class="landing-section" id="contact">
+    <div class="section-header-center">
+      <div class="landing-badge">Get In Touch</div>
+      <h2>Have Questions or Feedback?</h2>
+      <p>Reach out to the engineering team or explore the live GitHub open-source repository.</p>
+    </div>
+
+    <div style="max-width: 600px; margin: 0 auto; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-md);">
+      <form id="contactInquiryForm">
+        <div class="form-group">
+          <label class="form-label" for="contactName">Your Name <span class="req">*</span></label>
+          <input type="text" id="contactName" class="form-input" placeholder="e.g. Rahul Sharma" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="contactEmail">Email Address <span class="req">*</span></label>
+          <input type="email" id="contactEmail" class="form-input" placeholder="e.g. rahul@gmail.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="contactMessage">Message <span class="req">*</span></label>
+          <textarea id="contactMessage" class="form-textarea" rows="4" placeholder="Type your message or viva inquiry..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 0.95rem;">
+          Send Message <i class="fa-solid fa-paper-plane" style="margin-left: 6px;"></i>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       FOOTER
+       ======================================================================== -->
+  <footer class="landing-footer">
+    <div style="max-width: 1240px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="landing-brand-logo" style="width: 30px; height: 30px; font-size: 0.9rem;">
+          <i class="fa-solid fa-layer-group"></i>
+        </div>
+        <strong style="color: var(--text-main); font-size: 1.1rem;">HUMINEXA</strong>
+      </div>
+      <div>
+        &copy; 2026 HUMINEXA Enterprise. Shivajirao S. Jondhle Polytechnic, Asangaon (IF-5K).
+      </div>
+      <div>
+        <a href="https://github.com/Salaa2ma33/huminexa-hrms-crm" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">
+          <i class="fa-brands fa-github"></i> GitHub Repository
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       AUTHENTICATION MODAL (Triggered by Dashboard CTA & Get Started)
+       ======================================================================== -->
+  <div id="authModalContainer" class="modal-backdrop">
+    <div class="modal" style="max-width: 480px;">
+      
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="landing-brand-logo" style="width: 32px; height: 32px; font-size: 1rem;">
+            <i class="fa-solid fa-layer-group"></i>
           </div>
-          
-          <button id="loginThemeToggle" class="topbar-btn" title="Toggle Theme">
-            <i class="fa-solid fa-moon"></i>
-          </button>
+          <h3 style="font-size: 1.15rem; font-weight: 700; margin: 0;" id="authModalTitle">Workspace Access</h3>
         </div>
+        <button class="modal-close-btn" id="btnCloseAuthModal">&times;</button>
+      </div>
 
-        <div style="margin-bottom: 20px;">
-          <h2 id="authHeading" style="font-size: 1.4rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">Sign In to Workspace</h2>
-          <p id="authSubheading" style="font-size: 0.85rem; color: var(--text-muted);">Access your unified HR management and sales pipeline platform.</p>
-        </div>
-
-        <!-- AUTH MODE SWITCHER TABS -->
+      <div class="modal-body" style="padding-top: 16px;">
+        
+        <!-- Auth Switcher Tabs -->
         <div style="display: flex; gap: 6px; margin-bottom: 20px; background: var(--bg-surface-subtle); padding: 4px; border-radius: var(--radius-md);">
           <button type="button" id="tabSignInBtn" class="btn btn-primary" style="flex: 1; padding: 8px 12px; font-size: 0.85rem; border-radius: var(--radius-sm);">
             <i class="fa-solid fa-right-to-bracket" style="margin-right: 4px;"></i> Sign In
@@ -65,7 +332,7 @@
           <div class="form-group">
             <label class="form-label" for="email">Work Email Address <span class="req">*</span></label>
             <div style="position: relative;">
-              <input type="email" id="email" class="form-input" placeholder="e.g. yourname@gmail.com" required autocomplete="email" style="padding-left: 38px;">
+              <input type="email" id="email" class="form-input" placeholder="e.g. sajidmansurshaikh7@gmail.com" required autocomplete="email" style="padding-left: 38px;">
               <i class="fa-solid fa-envelope" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
             </div>
           </div>
@@ -81,12 +348,12 @@
             </div>
           </div>
 
-          <button type="submit" id="loginSubmitBtn" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 10px; font-size: 0.95rem;">
-            Sign In to Workspace <i class="fa-solid fa-arrow-right"></i>
+          <button type="submit" id="loginSubmitBtn" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 8px; font-size: 0.95rem;">
+            Sign In to Workspace <i class="fa-solid fa-arrow-right" style="margin-left: 4px;"></i>
           </button>
         </form>
 
-        <!-- 2. SIGN UP / REGISTRATION FORM -->
+        <!-- 2. REGISTRATION FORM -->
         <form id="registerForm" style="display: none;">
           <div class="form-group">
             <label class="form-label" for="regName">Full Name <span class="req">*</span></label>
@@ -105,7 +372,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="regPassword">Create Password <span class="req">*</span> (min 6 characters)</label>
+            <label class="form-label" for="regPassword">Create Password <span class="req">*</span> (min 6 chars)</label>
             <div style="position: relative;">
               <input type="password" id="regPassword" class="form-input" placeholder="••••••••••••" required minlength="6" style="padding-left: 38px;">
               <i class="fa-solid fa-lock" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
@@ -134,20 +401,19 @@
             </div>
           </div>
 
-          <button type="submit" id="regSubmitBtn" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 10px; font-size: 0.95rem;">
-            Create Account & Access Workspace <i class="fa-solid fa-rocket"></i>
+          <button type="submit" id="regSubmitBtn" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 8px; font-size: 0.95rem;">
+            Create Account & Log In <i class="fa-solid fa-rocket" style="margin-left: 4px;"></i>
           </button>
         </form>
 
-        <!-- DEMO ACCOUNTS HELPER -->
-        <div class="demo-accounts">
-          <div class="demo-title">
-            <span><i class="fa-solid fa-bolt" style="color: var(--warning); margin-right: 4px;"></i> Demo Role Presets</span>
-            <span style="font-size: 0.7rem; color: var(--text-light); text-transform: none;">Click to pre-fill</span>
+        <!-- Quick Demo Accounts -->
+        <div class="demo-accounts" style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px;">
+          <div class="demo-title" style="margin-bottom: 10px;">
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted);"><i class="fa-solid fa-bolt" style="color: var(--warning); margin-right: 4px;"></i> Quick 1-Click Demo Logins</span>
           </div>
-          <div class="demo-grid">
+          <div class="demo-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
             <button type="button" class="btn-demo" data-demo-role="admin">
-              <i class="fa-solid fa-shield-halved" style="color: #4F46E5;"></i> Admin
+              <i class="fa-solid fa-shield-halved" style="color: #4F46E5;"></i> Admin (Sajid)
             </button>
             <button type="button" class="btn-demo" data-demo-role="hr">
               <i class="fa-solid fa-users-gear" style="color: #10B981;"></i> HR Manager
@@ -161,87 +427,11 @@
           </div>
         </div>
 
-        <div style="margin-top: 24px; text-align: center; font-size: 0.78rem; color: var(--text-muted);">
-          &copy; 2026 HUMINEXA Enterprise. IT Diploma Final Project Edition.
-        </div>
-
       </div>
     </div>
-
-    <!-- RIGHT PANEL: VECTOR HERO ILLUSTRATION -->
-    <div class="login-right">
-      <svg class="hero-illustration" viewBox="0 0 600 480" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Background Grid glow -->
-        <circle cx="300" cy="240" r="200" fill="url(#hero-radial-glow)" />
-        
-        <!-- Main Dashboard Card Illustration -->
-        <rect x="70" y="80" width="460" height="320" rx="20" fill="#1E293B" stroke="#334155" stroke-width="2" />
-        <rect x="70" y="80" width="460" height="50" rx="20" fill="#0F172A" />
-        
-        <!-- Browser header dots -->
-        <circle cx="100" cy="105" r="5" fill="#EF4444" />
-        <circle cx="116" cy="105" r="5" fill="#F59E0B" />
-        <circle cx="132" cy="105" r="5" fill="#10B981" />
-        
-        <!-- Search bar mockup -->
-        <rect x="160" y="95" width="200" height="20" rx="10" fill="#1E293B" />
-        
-        <!-- Left mini sidebar mockup -->
-        <rect x="85" y="145" width="90" height="235" rx="10" fill="#0F172A" />
-        <rect x="95" y="160" width="70" height="14" rx="4" fill="#4F46E5" />
-        <rect x="95" y="185" width="70" height="12" rx="4" fill="#334155" />
-        <rect x="95" y="205" width="70" height="12" rx="4" fill="#334155" />
-        <rect x="95" y="225" width="70" height="12" rx="4" fill="#334155" />
-        <rect x="95" y="245" width="70" height="12" rx="4" fill="#334155" />
-        
-        <!-- Metric Cards -->
-        <rect x="190" y="145" width="105" height="65" rx="8" fill="#0F172A" stroke="#334155" />
-        <circle cx="210" cy="165" r="10" fill="#4F46E5" />
-        <rect x="228" y="160" width="55" height="10" rx="3" fill="#818CF8" />
-        <rect x="205" y="185" width="78" height="16" rx="4" fill="#6366F1" />
-
-        <rect x="305" y="145" width="105" height="65" rx="8" fill="#0F172A" stroke="#334155" />
-        <circle cx="325" cy="165" r="10" fill="#0EA5E9" />
-        <rect x="343" y="160" width="55" height="10" rx="3" fill="#38BDF8" />
-        <rect x="320" y="185" width="78" height="16" rx="4" fill="#0284C7" />
-
-        <rect x="420" y="145" width="95" height="65" rx="8" fill="#0F172A" stroke="#334155" />
-        <circle cx="440" cy="165" r="10" fill="#10B981" />
-        <rect x="458" y="160" width="45" height="10" rx="3" fill="#34D399" />
-        <rect x="435" y="185" width="68" height="16" rx="4" fill="#059669" />
-
-        <!-- Chart Graph Vector -->
-        <rect x="190" y="225" width="200" height="155" rx="10" fill="#0F172A" stroke="#334155" />
-        <path d="M 210 340 L 240 310 L 270 325 L 310 270 L 350 290 L 375 250" stroke="url(#hero-gradient)" stroke-width="4" stroke-linecap="round" fill="none" />
-        
-        <!-- Donut mini chart -->
-        <rect x="400" y="225" width="115" height="155" rx="10" fill="#0F172A" stroke="#334155" />
-        <circle cx="457" cy="300" r="35" stroke="#334155" stroke-width="10" fill="none" />
-        <circle cx="457" cy="300" r="35" stroke="#4F46E5" stroke-width="10" stroke-dasharray="140 220" fill="none" />
-        <circle cx="457" cy="300" r="35" stroke="#10B981" stroke-width="10" stroke-dasharray="60 220" stroke-dashoffset="-140" fill="none" />
-
-        <defs>
-          <linearGradient id="hero-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#4F46E5" />
-            <stop offset="50%" stop-color="#0EA5E9" />
-            <stop offset="100%" stop-color="#14B8A6" />
-          </linearGradient>
-          <radialGradient id="hero-radial-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="rgba(79, 70, 229, 0.3)" />
-            <stop offset="100%" stop-color="rgba(15, 23, 42, 0)" />
-          </radialGradient>
-        </defs>
-      </svg>
-
-      <div class="hero-caption">
-        <h2>Unified Workplace Ecosystem</h2>
-        <p>Streamline employee lifecycles, attendance tracking, leave requests, enterprise B2B accounts, and sales pipelines in a single cloud dashboard.</p>
-      </div>
-    </div>
-
   </div>
 
-  <!-- Toast Container -->
+  <!-- Toast Notifications Container -->
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Application Scripts -->
@@ -249,9 +439,66 @@
   <script src="js/ui.js"></script>
   <script src="js/auth.js"></script>
   <script>
-    document.getElementById('forgotPassBtn').addEventListener('click', () => {
-      UI.toast('info', 'Password Reset', 'Please use one of the demo role credentials listed below.');
+    // Smooth Scrolling & Navbar Active State
+    document.querySelectorAll('.landing-nav-menu .nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        document.querySelectorAll('.landing-nav-menu .nav-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
     });
+
+    // Theme Switcher for Landing Page
+    const landingThemeToggle = document.getElementById('landingThemeToggle');
+    if (landingThemeToggle) {
+      landingThemeToggle.addEventListener('click', () => {
+        UI.toggleTheme();
+      });
+    }
+
+    // Modal Triggers
+    const authModal = document.getElementById('authModalContainer');
+    const btnNavDashboard = document.getElementById('btnNavDashboard');
+    const btnHeroOpenDashboard = document.getElementById('btnHeroOpenDashboard');
+    const btnCloseAuthModal = document.getElementById('btnCloseAuthModal');
+
+    function openAuthModal() {
+      const token = API.getToken();
+      if (token) {
+        window.location.href = 'dashboard.html';
+        return;
+      }
+      if (authModal) authModal.classList.add('active');
+    }
+
+    function closeAuthModal() {
+      if (authModal) authModal.classList.remove('active');
+    }
+
+    if (btnNavDashboard) btnNavDashboard.addEventListener('click', openAuthModal);
+    if (btnHeroOpenDashboard) btnHeroOpenDashboard.addEventListener('click', openAuthModal);
+    if (btnCloseAuthModal) btnCloseAuthModal.addEventListener('click', closeAuthModal);
+    if (authModal) {
+      authModal.addEventListener('click', (e) => {
+        if (e.target === authModal) closeAuthModal();
+      });
+    }
+
+    // Contact Form Handler
+    const contactForm = document.getElementById('contactInquiryForm');
+    if (contactForm) {
+      contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        UI.toast('success', 'Message Sent!', 'Thank you for reaching out. We will get back to you shortly.');
+        contactForm.reset();
+      });
+    }
+
+    const forgotPassBtn = document.getElementById('forgotPassBtn');
+    if (forgotPassBtn) {
+      forgotPassBtn.addEventListener('click', () => {
+        UI.toast('info', 'Password Reset', 'Please use one of the 1-click demo role logins listed below.');
+      });
+    }
   </script>
 </body>
 </html>
